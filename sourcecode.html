@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+  <title>BC Wildfires 2021</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+
+    .map-overlay {
+        position: absolute;
+        font-family: sans-serif;
+        margin-bottom: 40px;
+        margin-left: 5px;
+        padding: 5px;
+        width: 80%;
+        font-size: 14px;
+        color: #fff;
+      border-radius: 3px;
+      }
+    
+    .fireInfo {
+      position: fixed;
+      font-family: sans-serif;
+      margin-top: 5px;
+      margin-left: 5px;
+      padding: 5px;
+      width: 30%;
+      border: 2px solid black;
+      font-size: 14px;
+      color: #222;
+      background-color: #fff;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id='map'></div>
+  <div class='map-overlay'
+id='features'>
+    <h1 style="color:black;font-family:helvetica"> BC Wildfires 2021</h1>
+    <div id='pd'><p style="color:black;font-family:helvetica;">Data provided by BC's Map Hub</p></div>
+    <div class='fireInfo'>
+      
+    <div>
+    <strong>Fire size (ha):</strong> <span id='size'></span></div>
+    <div>
+    <strong>Fire cause:</strong> <span id='cause'></span></div>
+    <div>
+      <strong>Latitude:</strong> <span id='lat'></span><strong>˚</strong></div>
+    <div>
+       <strong>Longitude:</strong> <span id='long'></span><strong>˚</strong></div>
+  </div>
+  
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1Ijoicm9yeXN0b2IiLCJhIjoiY2tsbG1wcTNkMDBybjJvcDRibmt2ZG9rcSJ9.T_1XelJuOMM1EmEDDvfL0g';
+    var map = new mapboxgl.Map({
+      container: 'map', // Specify the container ID
+      style: 'mapbox://styles/rorystob/ckmiedvzekh1617qktkhal34u', // Specify which map style to use
+      center: [-127, 55], // Specify the starting position [lng, lat]
+      zoom: 3.5 // Specify the starting zoom
+    });
+
+    var sizeDisplay = document.getElementById('size');
+    var causeDisplay = document.getElementById('cause');
+    var latDisplay = document.getElementById('lat');
+    var longDisplay = document.getElementById('long');
+    
+var fireID = null;
+
+    map.on('mousemove', 'lab2-a6fzwb', (e) => {
+
+          map.getCanvas().style.cursor = 'pointer';
+
+  var fireSize = e.features[0].properties.CURRENT_SI;
+  var fireCause =
+e.features[0].properties.FIRE_CAUSE;
+  var firelat = e.features[0].properties.LATITUDE;
+  var firelong = e.features[0].properties.LONGITUDE;
+
+if (e.features.length>0){
+  
+sizeDisplay.textContent = fireSize;
+  
+causeDisplay.textContent = fireCause;
+  
+latDisplay.textContent = firelat;
+
+longDisplay.textContent = firelong;
+  
+    if (fireID) {
+    
+map.removeFeatureState({
+  source: "lab2-a6fzwb",
+    id: fireID
+});
+
+}
+      fireID = e.features[0].id;
+  
+map.setFeatureState({
+      source: 'lab2-a6fzwb',
+      id:  fireID,
+},{
+  hover:true
+});
+}
+});
+//When the mouse is not over a data point, update the feature state of the previously hovered feature
+map.on('mouseleave', 'lab2-a6fzwb', function () {
+if (fireID) {
+map.setFeatureState(
+{
+source: 'fires',
+id: fireID
+},
+{
+hover: false
+}
+);
+}
+fireID = null;
+// Remove the information from the previously hovered feature from the sidebar
+sizeDisplay.textContent = '';
+causeDisplay.textContent = '';
+latDisplay.textContent = '';
+longDisplay.textContent = '';
+// Reset the cursor style
+map.getCanvas().style.cursor = '';
+});
+  
+    </script>
+  </body>
+</html>
