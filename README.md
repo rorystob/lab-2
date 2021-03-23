@@ -2,7 +2,7 @@
 
 BC Wildfires 2021
 
-
+![](Lab2Screenshot.png)
 
 
 
