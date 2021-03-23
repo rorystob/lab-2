@@ -4,6 +4,8 @@
 
 ![](Lab2Screenshot.png)
 
+This image shows the largest wildfire by area at 7645 ha.
+
 https://editor.p5js.org/rstobart/present/fpgA4G7qD
 
 **Resources Used:**
